@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-image: url();
+            background-size: cover;
+            background-position: center;
+            font-family: Arial;
+            background-color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <img id="loadImage" src="/img-srcs/Icon-Mac.svg.png" alt="" style="display: block; margin-left: auto; margin-right: auto; width: 150px; padding-top: 200px;">
+    <h1 id="loadText" style="color: white; text-align: center;">MacOS startup</h1>
+    <script>
+
+        const loadImage = document.getElementById("loadImage");
+        const loadText = document.getElementById("loadText");
+        const content = loadImage + loadText;
+
+        setTimeout(() => {
+            loadImage.style.display = "block";
+            loadText.style.color = "gray";
+            window.location.href = "/src/full-recovery/home.html";
+        }, 2000);
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>macOS Simulator</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: url('/img-srcs/images.jpg');
+        background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        overflow: hidden;
+    }
+
+    /* TOP BAR */
+    #topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 28px;
+        background: rgba(255, 255, 255, 0.35);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+    }
+
+    /* DOCK */
+    #dock {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 18px;
+        padding: 12px 18px;
+        background: rgba(255,255,255,0.35);
+        border-radius: 20px;
+        backdrop-filter: blur(12px);
+    }
+
+    #dock img {
+        width: 58px;
+        height: 58px;
+        transition: transform 0.18s ease;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    #dock img:hover {
+        transform: scale(1.35);
+    }
+
+    /* WINDOWS */
+    .window {
+        position: absolute;
+        width: 420px;
+        height: 280px;
+        background: rgba(255,255,255,0.85);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        display: none;
+    }
+
+    .titlebar {
+        height: 26px;
+        background: rgba(240,240,240,0.7);
+        border-radius: 10px 10px 0 0;
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
+        cursor: grab;
+    }
+
+    .close-btn {
+        width: 12px;
+        height: 12px;
+        background: #ff5f57;
+        border-radius: 50%;
+        cursor: pointer;
+        margin-right: 8px;
+    }
+
+    .content {
+        padding: 10px;
+    }
+
+    #finderbuttontop {
+        font-size: 14px;
+        color: black;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+    }
+
+    #finderbuttontop:hover {
+        text-decoration: underline;
+    }
+</style>
+</head>
+<body>
+
+<div id="topbar"><img style="width: 11px; height: 13px;" src="/img-srcs/Apple_logo_black.svg"><button style="background: transparent; border: none; font-weight: bold;" id="finderbuttontop">Finder</button><button style="background: transparent; border: none;" id="finderbuttontop">Edit</button><button style="background: transparent; border: none;" id="finderbuttontop">File</button><div class="timeDisplay" style="justify-content: right; margin-right: 0px;"><p>00:00</p></div></div>
+
+<!-- DOCK -->
+<div id="dock">
+    <img src="/img-srcs/Finder-macOS-Default-1024x1024 402x.png" onclick="openApp('app1')">
+    <img src="/img-srcs/Screenshot_2025-11-15_150524-removebg-preview.png" onclick="openApp('app2')">
+    <img src="/img-srcs/Screenshot_2025-11-15_154444-removebg-preview.png" onclick="openApp('app3')">
+</div>
+
+<!-- WINDOWS -->
+<div id="app1" class="window">
+    <div class="titlebar">
+        <div class="close-btn" onclick="closeApp('app1')"></div>
+        Finder
+    </div>
+    <div class="content">Finder content...</div>
+</div>
+
+<div id="app2" class="window">
+    <div class="titlebar">
+        <div class="close-btn" onclick="closeApp('app2')"></div>
+        Safari
+        <input type="text" id="safaribox" onchange="document.getElementById('safari-iframe').src = document.getElementById('safaribox').value" placeholder="Search or enter website name" style="margin-left: 10px; width: 250px; border-radius: 5px; padding: 2px; text-align: center;">
+    </div>
+    <div class="content">
+        <iframe src="https://www.wikipedia.org/" style="width: 100%; height: 180%;" id="safari-iframe" frameborder="0"></iframe>
+    </div>
+</div>
+
+<div id="app3" class="window">
+    <div class="titlebar">
+        <div class="close-btn" onclick="closeApp('app3')"></div>
+        App 3
+    </div>
+    <div class="content">App 3 content...</div>
+</div>
+
+<script>
+    const insidetextbox = document.getElementById("safaribox").value = "https://www.wikipedia.org/";
+
+    
+
+        const now = new Date();
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        if (hours < 10) hours = '0' + hours;
+        if (minutes < 10) minutes = '0' + minutes;
+        document.querySelector('.timeDisplay p').textContent = hours + ':' + minutes;
+        
+        
+
+function openApp(id) {
+    const win = document.getElementById(id);
+    win.style.display = "block";
+    win.style.left = "50px";
+    win.style.top = "50px";
+}
+
+function closeApp(id) {
+    document.getElementById(id).style.display = "none";
+}
+
+/* DRAGGABLE WINDOWS */
+const windows = document.querySelectorAll('.window');
+windows.forEach(win => {
+    const bar = win.querySelector('.titlebar');
+    let offsetX, offsetY, dragging = false;
+
+    bar.addEventListener('mousedown', e => {
+        dragging = true;
+        offsetX = e.clientX - win.offsetLeft;
+        offsetY = e.clientY - win.offsetTop;
+        bar.style.cursor = "grabbing";
+    });
+
+    document.addEventListener('mouseup', () => {
+        dragging = false;
+        bar.style.cursor = "grab";
+    });
+
+    document.addEventListener('mousemove', e => {
+        if (!dragging) return;
+        win.style.left = (e.clientX - offsetX) + "px";
+        win.style.top = (e.clientY - offsetY) + "px";
+    });
+});
+
+
+setInterval(() => {
+    const now = new Date();
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    if (hours < 10) hours = '0' + hours;
+    if (minutes < 10) minutes = '0' + minutes;
+    document.querySelector('.timeDisplay p').textContent = hours + ':' + minutes;
+}, 1000);
+
+</script>
+
+</body>
+</html>

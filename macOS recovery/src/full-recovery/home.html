@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-image: url(/img-srcs/images.jpg);
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+background-attachment: fixed; /* optioneel, maakt ‘m vast */
+font-family: Arial;
+
+.center {
+    display: flex;
+    justify-content: center; /* horizontaal */
+    align-items: center;     /* verticaal */
+    height: 100vh;           /* hele scherm hoogte */
+}
+
+.setup-box {
+    width: 250px;
+    padding: 20px;
+    background-color: black;
+    border-radius: 10px;
+}
+
+.setup-box h1 {
+    color: white;
+    text-align: center;
+}
+
+.setup-box input,
+.setup-box button {
+    width: 80%;
+    margin-left: 10%;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: honeydew;
+}
+
+.setup-box button {
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.setup2-box {
+    width: 250px;
+    padding: 20px;
+    background-color: black;
+    border-radius: 10px;
+}
+
+.setup2-box h1 {
+    color: white;
+    text-align: center;
+}
+
+.setup2-box input,
+.setup2-box button {
+    width: 80%;
+    margin-left: 10%;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: honeydew;
+}
+
+.setup2-box button {
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+
+
+.setup3-box {
+    width: 250px;
+    padding: 20px;
+    background-color: black;
+    border-radius: 10px;
+}
+
+.setup3-box h1 {
+    color: white;
+    text-align: center;
+}
+
+.setup3-box input,
+.setup3-box button {
+    width: 80%;
+    margin-left: 10%;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: honeydew;
+}
+
+.setup3-box button {
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+
+
+
+}
+    </style>
+</head>
+<body>
+    <div class="center">
+    <div class="setup-box" display="block" id="setup-box">
+        <h1>Setup</h1>
+        <input id="fn" type="text" placeholder="First Name">
+        <input id="ln" type="text" placeholder="Last Name">
+        <input id="u" type="text" placeholder="Username">
+        <input id="password" type="password" placeholder="Password">
+        <input id="passwordtwice" type="password" placeholder="Continue Password">
+        <button onclick="checkfirst()">Continue</button>
+    </div>
+    <div class="setup2-box" display="none" id="setup2-box" style="display: none;">
+        <h1>Recovering</h1>
+        <button style="color: black; background-color: aliceblue;">Recover Files</button>
+        <button onclick="checkSecond()">Continue without recovering</button>
+
+    </div>
+
+    <div class="setup3-box" display="none" id="setup3-box" style="display: none;">
+        <h1>Almost Ready</h1>
+        <button><img style="width: 22px; height: 22px;" src="/img-srcs/d9a13035-e750-46a3-8b85-1b562ffd429a.png">Terminal</button>
+        <button onclick="window.location = '/src/full-recovery/macos-tahoe.html'"><img style="width: 22px; height: 22px;" src="/img-srcs/macos-tahoe.png">Setup Tahoe</button>
+        <button>Other Setups</button>
+        <button>Other Options</button>
+
+    </div>
+</div>
+<script>
+    function checkfirst() {
+        if (document.getElementById("password").value === document.getElementById("passwordtwice").value) {
+            document.getElementById('setup2-box').style.display = 'block';
+            document.getElementById('setup-box').style.display = 'none';
+        } else {
+            
+        }
+    }
+    function checkSecond() {
+        document.getElementById('setup2-box').style.display = 'none';
+        document.getElementById('setup3-box').style.display = 'block';
+    }
+</script>
+</body>
+</html>
