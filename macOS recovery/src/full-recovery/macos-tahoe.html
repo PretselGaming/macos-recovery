@@ -31,6 +31,17 @@ background-attachment: fixed;
         padding: 0 10px;
     }
 
+    .fullscreen-btn {
+        width: 12px;
+        height: 12px;
+        background: #009619;
+        border-radius: 50%;
+        cursor: pointer;
+        margin-right: 8px;
+    }
+
+
+
     /* DOCK */
     #dock {
         position: fixed;
@@ -120,6 +131,7 @@ background-attachment: fixed;
 <div id="app1" class="window">
     <div class="titlebar">
         <div class="close-btn" onclick="closeApp('app1')"></div>
+        <div class="fullscreen-btn" onclick="fullscreen('app1')"></div>
         Finder
     </div>
     <div class="content">Finder content...</div>
@@ -128,6 +140,7 @@ background-attachment: fixed;
 <div id="app2" class="window">
     <div class="titlebar">
         <div class="close-btn" onclick="closeApp('app2')"></div>
+        <div class="fullscreen-btn" onclick="fullscreen('app2')"></div>
         Safari
         <input type="text" id="safaribox" onchange="document.getElementById('safari-iframe').src = document.getElementById('safaribox').value" placeholder="Search or enter website name" style="margin-left: 10px; width: 250px; border-radius: 5px; padding: 2px; text-align: center;">
     </div>
@@ -139,9 +152,10 @@ background-attachment: fixed;
 <div id="app3" class="window">
     <div class="titlebar">
         <div class="close-btn" onclick="closeApp('app3')"></div>
-        App 3
+        <div class="fullscreen-btn" onclick="fullscreen('app3')"></div>
+        Trash
     </div>
-    <div class="content">App 3 content...</div>
+    <div class="content">Trash is empty...</div>
 </div>
 
 <script>
@@ -203,6 +217,21 @@ setInterval(() => {
     if (minutes < 10) minutes = '0' + minutes;
     document.querySelector('.timeDisplay p').textContent = hours + ':' + minutes;
 }, 1000);
+
+function fullscreen(id) {
+    const win = document.getElementById(id);
+    if (win.style.width !== "100%") {
+        win.style.width = "100%";
+        win.style.height = "100%";
+        win.style.left = "0";
+        win.style.top = "28px";
+    } else {
+        win.style.width = "420px";
+        win.style.height = "280px";
+        win.style.left = "50px";
+        win.style.top = "50px";
+    }
+}
 
 </script>
 
