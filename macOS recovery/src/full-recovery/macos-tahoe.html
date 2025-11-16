@@ -19,6 +19,7 @@ background-attachment: fixed;
 
     /* TOP BAR */
     #topbar {
+        user-select: none;
         position: fixed;
         top: 0;
         left: 0;
@@ -40,6 +41,20 @@ background-attachment: fixed;
         margin-right: 8px;
     }
 
+    #dockTooltip {
+    position: fixed;
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    pointer-events: none;
+    transform: translate(-50%, -10px);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
+}
 
 
     /* DOCK */
@@ -56,17 +71,23 @@ background-attachment: fixed;
         backdrop-filter: blur(12px);
     }
 
-    #dock img {
-        width: 58px;
-        height: 58px;
-        transition: transform 0.18s ease;
-        cursor: pointer;
-        user-select: none;
-    }
+    #dock {
+    display: flex;
+    gap: 10px;
+}
 
-    #dock img:hover {
-        transform: scale(1.35);
-    }
+#dock img {
+    width: 58px;
+    height: 58px;
+    transition: transform 0.1s ease;
+    user-select: none;
+    
+}
+
+#dock {
+    cursor: pointer;
+}
+
 
     /* WINDOWS */
     .window {
@@ -116,15 +137,18 @@ background-attachment: fixed;
     }
 </style>
 </head>
+<div id="dockTooltip" style="box-shadow: inset;"></div>
+
 <body>
 
 <div id="topbar"><img style="width: 11px; height: 13px;" src="/img-srcs/Apple_logo_black.svg"><button style="background: transparent; border: none; font-weight: bold;" id="finderbuttontop">Finder</button><button style="background: transparent; border: none;" id="finderbuttontop">Edit</button><button style="background: transparent; border: none;" id="finderbuttontop">File</button><div class="timeDisplay" style="justify-content: right; margin-right: 0px;"><p>00:00</p></div></div>
 
 <!-- DOCK -->
 <div id="dock">
-    <img src="/img-srcs/Finder-macOS-Default-1024x1024 402x.png" onclick="openApp('app1')">
-    <img src="/img-srcs/Screenshot_2025-11-15_150524-removebg-preview.png" onclick="openApp('app2')">
-    <img src="/img-srcs/Screenshot_2025-11-15_154444-removebg-preview.png" onclick="openApp('app3')">
+    <img src="/img-srcs/Finder-macOS-Default-1024x1024 402x.png" alt="Finder" onclick="openApp('app1')">
+    <img src="/img-srcs/Screenshot_2025-11-16_112845-removebg-preview.png" alt="Launchpad" onclick="openApp('app4'), midScreenPopup('app4')">
+    <img src="/img-srcs/Screenshot_2025-11-15_150524-removebg-preview.png" alt="Safari" onclick="openApp('app2')">
+    <img src="/img-srcs/Screenshot_2025-11-15_154444-removebg-preview.png" alt="Trash" onclick="openApp('app3')">
 </div>
 
 <!-- WINDOWS -->
@@ -157,6 +181,24 @@ background-attachment: fixed;
     </div>
     <div class="content">Trash is empty...</div>
 </div>
+
+<div id="app4" class="window">
+    <div class="titlebar">
+        <div class="close-btn" onclick="closeApp('app4')"></div>
+        Launchpad
+    </div>
+    <div class="content"><div id="launchpaApps" style="display: flex; flex-wrap: wrap; gap: 15px;">
+    <img style="width: 50px; height: 50px; cursor: pointer;" src="/img-srcs/Finder-macOS-Default-1024x1024 402x.png" onclick="openApp('app1')">
+    <img style="width: 50px; height: 50px; cursor: pointer;" src="/img-srcs/Screenshot_2025-11-15_150524-removebg-preview.png" onclick="openApp('app2')">
+    <img style="width: 50px; height: 50px; cursor: pointer;" src="/img-srcs/Screenshot_2025-11-15_154444-removebg-preview.png" onclick="openApp('app3')">
+</div></div>
+    <style>
+    .center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    } </style>
 
 <script>
     const insidetextbox = document.getElementById("safaribox").value = "https://www.wikipedia.org/";
@@ -232,6 +274,80 @@ function fullscreen(id) {
         win.style.top = "50px";
     }
 }
+
+function midScreenPopup(id) {
+    function aboveDockHeight() {
+        const dock = document.getElementById('dock');
+        return dock.offsetHeight + 1; // 20px extra space
+    }
+    const win = document.getElementById(id);
+    win.style.left = "50%";
+    win.style.top = "60%";
+    win.style.transform = "translate(-50%, -50%)";
+    win.style.display = "block";
+    win.style.width = "600px";
+    win.style.height = "400px";''
+    win.style.dragging = "false";
+}
+
+const dock = document.getElementById("dock");
+const icons = document.querySelectorAll("#dock img");
+
+dock.addEventListener("mousemove", (e) => {
+    const rect = dock.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+
+    icons.forEach((icon) => {
+        const iconRect = icon.getBoundingClientRect();
+        const iconCenter = iconRect.left - rect.left + iconRect.width / 2;
+
+        const distance = Math.abs(mouseX - iconCenter);
+
+        // Hoe kleiner de afstand, hoe groter de schaal
+        const maxScale = 1.5;
+        const minScale = 1;
+        const influence = 150; // hoe ver het effect uitvloeit
+
+        const scale = maxScale - (distance / influence);
+        const finalScale = Math.max(minScale, scale);
+
+        icon.style.transform = `scale(${finalScale})`;
+    });
+});
+
+dock.addEventListener("mouseleave", () => {
+    icons.forEach((icon) => {
+        icon.style.transform = "scale(1)";
+    });
+});
+
+const tooltip = document.getElementById("dockTooltip");
+
+icons.forEach((icon) => {
+    // Lees de app-naam uit de alt-tag
+    const appName = icon.getAttribute("alt") || "App";
+
+    icon.addEventListener("mouseenter", (e) => {
+        tooltip.textContent = appName;
+        tooltip.style.opacity = 1;
+
+        const rect = icon.getBoundingClientRect();
+        tooltip.style.left = rect.left + rect.width / 2 + "px";
+        tooltip.style.top = rect.top - 25 + "px";
+    });
+
+    icon.addEventListener("mousemove", (e) => {
+        const rect = icon.getBoundingClientRect();
+        tooltip.style.left = rect.left + rect.width / 2 + "px";
+        tooltip.style.top = rect.top - 25 + "px";
+    });
+
+    icon.addEventListener("mouseleave", () => {
+        tooltip.style.opacity = 0;
+    });
+});
+
+
 
 </script>
 
